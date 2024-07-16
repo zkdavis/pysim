@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: pysim
+Version: 0.2.0
+Summary: A python package for interacting with simulations
+Home-page: https://github.com/KeyanGootkin/pysim
+Author: Keyan Gootkin
+Author-email: gootkin@hawaii.edu
+Requires-Python: >=3.7, <4
+Description-Content-Type: text/markdown
