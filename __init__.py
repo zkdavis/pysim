@@ -6,5 +6,4 @@ from pysim.environment import *
 from pysim.plotting import *
 from pysim.fields import *
 from pysim.simulation import *
-from pysim.update import *
 from pysim.dhybridr import *
