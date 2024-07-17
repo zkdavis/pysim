@@ -1,5 +1,6 @@
 from pysim.parsing import File, Folder 
-#need to rethink this better DID THIS ACTUALLY WORK THIS TIME?
+#need to rethink this better 
+#testing this one last time
 pysimDir = Folder("/".join(__file__.split('/')[:-1]))
 simulationDir = Folder("/anvil/scratch/x-kgootkin/sims/")
 dHybridRtemplate = Folder(pysimDir.path + "/templates/dHybridR/")
