@@ -88,3 +88,16 @@ def kspec1d(image: np.ndarray, bins: int = 100) -> tuple[np.ndarray, np.ndarray,
     ks = np.array([np.mean(k[np.where((kgrid[i] < kmag) & (kmag < kgrid[i+1]))]) for i in range(len(kgrid)-1)])
     kerr = np.array([np.std(in_bin:=k[np.where((kgrid[i] < kmag) & (kmag < kgrid[i+1]))])/np.sqrt(len(in_bin)) for i in range(len(kgrid)-1)])
     return kx, ks, kerr
+
+
+def to_f_double(value: float) -> str:
+    ###converts python float to fortran double
+    return str(value).replace('e', 'd')
+
+def quote_string(string: str) -> str:
+    ### adds quotes to a string
+    return f'"{string}"'
+
+def to_f_bool(value: bool) -> str:
+    ###converts python bool to fortran bool
+    return '.true.' if value else '.false.'
