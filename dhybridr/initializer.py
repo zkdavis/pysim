@@ -1,7 +1,7 @@
 #pysim imports
 from pysim.parsing import File, Folder
 from pysim.fields import ScalarField, VectorField
-from pysim.dhybridr.input import dHybridRinput
+from dhybridr.input import dHybridRinput
 #nonpysim imports
 from scipy.io import FortranFile
 import numpy as np
@@ -11,7 +11,7 @@ def field_dot(A: np.ndarray, B: np.ndarray) -> np.ndarray: return np.sum(A * B, 
 
 class dHybridRconfig(File):
     def __init__(self, parent):
-        self.parent = parent 
+        self.parent = parent
         path = f"{self.parent.path}/config"
         File.__init__(self, path)
         #if the file doesn't already exist  don't do the rest of the setup
@@ -28,13 +28,13 @@ class dHybridRconfig(File):
                 if any([
                     len(line)==0,
                     line.startswith("#"),
-                    line.startswith("!")
+                    line.F("!")
                 ]): continue
                 name, value = (x.strip() for x in line.split("="))
                 self.params.append(name)
                 setattr(self, name, value)
         if "mode" not in self.params: raise KeyError(f"config file {path} doesn't have a mode set")
-    
+
     def write(self):
         self.lines = [
             f"mode={self.mode}"
@@ -45,7 +45,7 @@ class dHybridRconfig(File):
 
 class dHybridRSnapshot:
     def __init__(
-        self, 
+        self,
         parent,
         i: int,
         caching: bool = False,
@@ -79,11 +79,11 @@ class dHybridRinitializer:
         self.Ny: int = int(self.L[1] / self.dy)
         self.shape: tuple[int, int] = (self.Ny, self.Nx)
 
-    def build_B_field(self): 
+    def build_B_field(self):
         self.B = np.array([np.zeros(self.input.ncells) for i in range(2)])
     def build_u_field(self):
         self.u = np.array([np.zeros(self.input.ncells) for i in range(2)])
-    def save_init_field(self, field: np.ndarray, path: str): 
+    def save_init_field(self, field: np.ndarray, path: str):
         FortranFile(path, 'w').write_record(field.T)
     def prepare_simulation(self):
         self.build_B_field()
@@ -113,8 +113,8 @@ class TurbInit(dHybridRinitializer):
         self.kmag: np.ndarray = np.hypot(*self.k)
         self.kmag[self.kmag == 0] = np.nan
 
-        self.simulation.mach = self.mach 
-        self.simulation.dB = self.dB 
+        self.simulation.mach = self.mach
+        self.simulation.dB = self.dB
         self.simulation.kinit = self.kinit
         if not self.simulation.compressed:
             l = self.input.niter if not self.simulation.outputDir.exists() else len(self.simulation.B)*self.input.ndump
@@ -123,7 +123,7 @@ class TurbInit(dHybridRinitializer):
         elif self.simulation.compressed:
             self.simulation.time = np.array([int(x[-11:-3]) for x in self.simulation.density.file_names]) * self.simulation.input.dt
             self.simulation.tau = self.simulation.time * self.mach / (max(self.input.boxsize))
-        if "peak_jz" in self.config.params: 
+        if "peak_jz" in self.config.params:
             self.simulation.peak_jz_ind = int(self.config.peak_jz)
             self.simulation.initial = dHybridRSnapshot(self.simulation,0)
             self.simulation.peak = dHybridRSnapshot(self.simulation, self.simulation.peak_jz_ind)
@@ -219,8 +219,8 @@ class FlareWaveInit(dHybridRinitializer):
     ):
         dHybridRinitializer.__init__(self, input_file)
         self.B0 = B0
-        self.Bg = Bg 
-        self.w0 = w0 
+        self.Bg = Bg
+        self.w0 = w0
         self.psi0 = psi0
 
     def build_B_field(self, unknown_variable=69.12):
@@ -234,4 +234,3 @@ class FlareWaveInit(dHybridRinitializer):
         for i in range(len(y))])
         Bz = np.sqrt(self.B0**2 + self.Bg**2 - Bx**2)
         self.B = np.array([Bx.T, By.T, Bz.T], dtype=np.float32)
-    

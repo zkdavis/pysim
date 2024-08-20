@@ -1,8 +1,10 @@
-import pysim as sim
+import dhybridr.initializer as sim
+from pysim.parsing import File
 from glob import glob
 import os
 import shutil
 import numpy as np
+from pathlib import Path
 
 amp = 1.,
 k = 1., np.pi
@@ -13,7 +15,8 @@ if __name__ == '__main__':
         os.remove(file)
     if os.path.exists("Output"): shutil.rmtree("Output")
     if os.path.exists("Restart"): shutil.rmtree("Restart")
-    # make init files
-    Init = sim.TurbInit(amp, k)
+    # make init
+    xf = File('test')
+    Init = sim.TurbInit(xf)#(amp, k)
     Init.saveFortran(path='input/')
     os.system("sh submit_anvil.sh")
