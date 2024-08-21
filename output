@@ -1,0 +1,141 @@
+! dHybrid input file v 2.2
+! Created for Keyan Gootkin's pysim module
+!---------- node conf ----------
+node_conf
+{
+        node_number(1:2)=16,16,                ! num of processes in each dimension
+}
+!---------- time ----------
+time
+{
+        dt=0.002,                ! time step
+        niter=250000,                ! number of iterations
+        t0=0.0,                ! initial time
+        stiter=0,                ! starting iteration number
+        c=100.0,                ! speed of light
+}
+!---------- grid space ----------
+grid_space
+{
+        ncells(1:2)=1024,1024,              ! Grid size in number of cells in each dimension
+        boxsize(1:2)=512.0,512.0,               ! Simulation box size in normalized units
+        bdtype="per","per","per","per",               ! Boundary conditions for each dimension
+        Te=1.0,                ! Electron temperature
+        gamma=1.66667,                ! Adiabatic index
+}
+!---------- global output ----------
+global_output
+{
+        dodump=.true.,                ! if true -> do dump
+        ndump=500,                ! num of iter between dumps
+        B0=3.05191d-07,                ! B field normalization (T)
+        n0=1000000.0,                ! density normalization (m-3)
+        units="NORM",                ! "NORM" (normalized) or "IS" (int. sys.)
+}
+!---------- restart ----------
+restart
+{
+        do_restart=.false.,                ! restarting previous simulation?
+        save_restart=.true.,                ! save restart info on disk?
+        restart_step=5000,                ! num of iter between restart info dumps
+}
+!---------- ext emf ----------
+ext_emf
+{
+        Bx="0.",                ! External Bx field
+        By="0.",                ! External By field
+        Bz="0.",                ! External Bz field
+        Ex="0",                ! External Ex field
+        Ey="0",                ! External Ey field
+        Ez="0",                ! External Ez field
+        input_name="./input/Bfld_init.unf",                ! Input file name for external EM field
+        n_constants=6,                ! Number of constants
+        ct(1:6)=1.0,0.0,425.0,200.0,1.0,0.3,                ! Background magnetic field parameters
+}
+!---------- field diag ----------
+field_diag
+{
+        dmp_efld(1:4)=.false.,.false.,.true.,.true.,                ! Dump electric field components
+        dmp_bfld(1:4)=.false.,.false.,.true.,.true.,                ! Dump magnetic field components
+        dmp_jfld(1:2)=.false.,.false.,                ! Dump current field components
+}
+!---------- algorithm ----------
+algorithm
+{
+        ifsmooth=.true.,                ! Smooth fields? default = true
+        ifsmoothextfields=.true.,                ! Smooth external fields? default = true
+        filternpass=8,                ! Number of filter passes
+        compensate=.true.,                ! Use compensator in filter? default = true
+        subniter=8,                ! Number of subiterations
+        allowederror=1.0,                ! Allowed error in subiteration field calculation
+}
+!---------- loadbalance ----------
+loadbalance
+{
+        loadbalance=.false.,                ! Do any load balance? default= true
+        ifdynamicloadbalance=.false.,                ! Do dynamic load balance? default = true
+        dynamicloadbalancestep=500,                ! Number of iterations between dynamic load balance
+}
+!---------- particles ----------
+particles
+{
+        num_species=1,                ! Number of species
+        part_sort_step=25,                ! Number of steps between sorting
+}
+!---------- species ----------
+species
+{
+        name="H+",                ! Species name
+        dist="THERMAL",                ! Type of velocity distribution (THERMAL or ISO)
+        num_par(1:2)=10,10,                ! Number of particles per cell
+        spare_size=0.1,                ! % (0 to 1) of unused space in part vector
+        ir=1,                ! Ionization ratio
+        rqm=1.0,                ! Charge to mass ratio (inverse)
+        vdrift(1:3)=0.0,0.0,0.0,                ! Drift velocity
+        vth=0.1,                ! Thermal velocity
+        kin_push=.true.,                ! True -> kinetic push, false -> MHD
+        ion_t=8.0,                ! Ionization time
+        nsp="1.",                ! Species number density
+        input_name="./input/vfld_init.unf",                ! Input file name for velocity field
+        n_constants=5,                ! Number of constants in density definition
+        ct(1:5)=1.0,200.0,1.0,0.1,0.1,                ! Density parameters
+        follow=.true.,                ! Follow particles? default=false
+}
+!---------- boundary conditions ----------
+boundary_conditions
+{
+        bdtype="per","per","per","per",                ! Boundary conditions for each wall
+        vth=0.0,                ! Thermal bath velocity (ignored for others)
+}
+!---------- diag species ----------
+diag_species
+{
+        dmp_vfld(1:2)=.false.,.true.,                ! Dump velocity field
+        dmp_pfld(1:2)=.false.,.true.,                ! Dump pressure field
+        phasespaces="x3x2x1","p1x1","Etx1","p2x1","p3x1",                ! Phase spaces to dump
+        pres(1:3)=512,512,512,                ! Resolution for phase space (defaults to 512)
+        xres(1:2)=256,256,                ! Resolution for x space
+}
+!---------- raw diag ----------
+raw_diag
+{
+        raw_dump=.false.,                ! Turn on or off raw dumps
+        raw_ndump=1000,                ! Number of iterations between raw dumps
+        raw_dump_fraction=1.0,                ! Fraction of raw dumps
+        v_min=80.0,                ! Minimum velocity for raw dumps
+}
+!---------- track diag ----------
+track_diag
+{
+        track_dump=.false.,                ! Turn on or off track dumps (if on, follow=true)
+        track_fields=.true.,                ! Track fields in particle positions
+        track_ndump=1000,                ! Number of iterations between track dumps
+        track_nstore=5,                ! Values are stored every iteration if =1, every other iter if =2, etc
+        track_info_file="./input/H+.tags",                ! Track information (particle tags to track)
+}
+!---------- diag species total ----------
+diag_species_total
+{
+        dmp_vfld(1:2)=.false.,.false.,                ! Dump total velocity field
+        pres(1:3)=512,512,512,                ! Resolution for total phase space (defaults to 512)
+}

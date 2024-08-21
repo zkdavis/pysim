@@ -1,0 +1,44 @@
+
+
+
+
+
+
+
+
+
+
+
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pysim"
+version = "0.2.0"
+description="A python package for interacting with simulations"
+authors = [
+    { name="Keyan Gootkin", email="gootkin@hawaii.edu" }
+]
+license = { text = "GPL-3.0-only" }
+readme = "README.md"
+requires-python = ">=3.9.12"
+dependencies = [
+    "numpy>=1.23,<2",
+    "astropy>=5.0,<6",
+    "matplotlib>=3.5,<4",
+    "tqdm>=4.64,<5",
+    "h5py",
+    "moviepy"
+]
+
+[project.urls]
+homepage = "https://github.com/KeyanGootkin/pysim"
+repository = "https://github.com/KeyanGootkin/pysim"
+
+[project.scripts]
+LeHaMoC = "console:main_cli"
+
+[tool.setuptools]
+package-dir = {"pysim" = "src","dhybridr"="dhybridr"}
